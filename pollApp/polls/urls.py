@@ -7,4 +7,5 @@ urlpatterns = [
     path("answer/", views.QuestionAnswer.as_view(), name="two"),
     path("pollsets/", views.AllPollSetView.as_view(), name="GetPollSet"),
     path("poll/", views.PollSetView.as_view(), name="PollSetView"),
+    path("user/answer/", views.AllAnswers.as_view(), name="AllAnswers"),
 ]

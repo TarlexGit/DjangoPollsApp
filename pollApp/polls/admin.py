@@ -9,6 +9,7 @@ class QuestionAdmin(admin.ModelAdmin):
         'title',
         'visible',
         'max_points',
+        'pk',
     )
  
 class ChoiceAdmin(admin.ModelAdmin):
@@ -17,6 +18,7 @@ class ChoiceAdmin(admin.ModelAdmin):
         'question',
         'points',
         'lock_other',
+        'pk',
     )
     list_filter = ('question',)
 
@@ -26,6 +28,7 @@ class AnswerAdmin(admin.ModelAdmin):
         'user',
         'question',
         'choice',
+        'pk',
     )
     list_filter = ('user',)
 
@@ -34,6 +37,7 @@ class PollSetAdmin(admin.ModelAdmin):
         'title',
         'start_date',
         'expiration_date',
+        'pk',
     ) 
 
 admin.site.register(PollSet, PollSetAdmin)

@@ -6,6 +6,9 @@ from rest_framework.views import  APIView
 from rest_framework.response import Response
 from .models import Question, PollSet
 from rest_framework import viewsets,generics
+from .models import Answer
+from .serializers import UserAnswersSerializer
+
 
 class QuestionsView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -21,7 +24,7 @@ class AllPollSetView(APIView):
     serializer_class = PollSetSerializer
 
     def get(self, request):
-        sets = PollSet.objects.all()
+        sets = PollSet.objects.filter(active=True, )
         all_polls = PollSetSerializer(sets, many=True)
         return Response(all_polls.data)  
 
@@ -34,7 +37,7 @@ class PollSetView(generics.ListAPIView):
     filterset_fields = ['poll_set',] 
     
 class QuestionAnswer(GenericAPIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = AnswerSerializer
 
     def post(self, request, format=None):
@@ -44,3 +47,10 @@ class QuestionAnswer(GenericAPIView):
             return Response({'result': 'OK'})
 
 
+class AllAnswers(generics.ListAPIView):
+    serializer_class = UserAnswersSerializer
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Answer.objects.all()
+        return queryset.filter(user=user)

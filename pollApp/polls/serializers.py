@@ -28,8 +28,13 @@ class QuestionSerializer(serializers.ModelSerializer):
 class PollSetSerializer(serializers.ModelSerializer):   
     class Meta:
         model = PollSet
-        fields = ['pk', ]
+        fields = ['pk', 'title',]
         
+
+class UserAnswersSerializer(serializers.ModelSerializer):   
+    class Meta:
+        model = Answer
+        fields = '__all__'
 
 class AnswerSerializer(serializers.Serializer):
     answers = serializers.JSONField()

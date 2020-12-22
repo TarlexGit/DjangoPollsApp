@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class PollSet(models.Model):
     title = models.CharField(max_length=100) 
+    active = models.BooleanField(default=False)
     start_date = models.DateTimeField(auto_now_add=True)
     expiration_date = models.DateTimeField()
 
@@ -33,6 +34,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
     choice = models.ForeignKey(Choice, on_delete=models.DO_NOTHING)
     created = models.DateTimeField(auto_now_add=True) 
-
+    poll_set = models.ForeignKey(PollSet, on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.choice.title
