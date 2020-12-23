@@ -31,6 +31,7 @@ class AnswerAdmin(admin.ModelAdmin):
         'question',
         'choice',
         'pk',
+        'user',
     )
     list_filter = ('user',)
 

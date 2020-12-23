@@ -3,13 +3,13 @@ from .serializers import QuestionSerializer, AnswerSerializer, PollSetSerializer
 from rest_framework.permissions import IsAuthenticated 
 from rest_framework.views import  APIView
 from rest_framework.response import Response
-from .models import Question, PollSet, Answer, AnonymousUser
+from .models import Question, PollSet, Answer, AnonymousUser, AnonymousAnswer
 from rest_framework import generics
-from .serializers import UserAnswersSerializer
+from .serializers import UserAnswersSerializer, AnonUserAnswersSerializer
 from django_filters.rest_framework import DjangoFilterBackend 
 from .services.passed_middleware import freshen_up_AnonymousUser
 from rest_framework.request import Request
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404  
 
 
 class QuestionsView(APIView):
@@ -66,10 +66,22 @@ class QuestionAnswer(generics.GenericAPIView):
 
  
 
-class AllAnswers(generics.ListAPIView):
-    serializer_class = UserAnswersSerializer
-    
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Answer.objects.all()
-        return queryset.filter(user=user) 
+class AllAnswers(APIView): 
+    def get(self, request):
+        # print('---------', request.COOKIES['AnonymousUser'])
+        if request.user: 
+            print('request.user', request.user)
+            try:
+                queryset = Answer.objects.filter(user=request.user)
+                all_answers = UserAnswersSerializer(queryset, many=True )
+                return Response(all_answers.data)
+            except:
+                print(request.COOKIES['AnonymousUser'])
+        # elif request.user == "AnonymousUser" and 'AnonymousUser' in request.COOKIES:  
+        #     queryset = AnonymousAnswer.objects.filter(pk=request.COOKIES['AnonymousUser'])
+        #     all_answers = AnonUserAnswersSerializer(queryset, many=True )
+        #     return Response(all_answers.data )
+        # else: 
+                queryset = AnonymousAnswer.objects.filter(user=request.COOKIES['AnonymousUser'])
+                all_answers = AnonUserAnswersSerializer(queryset, many=True)
+                return Response(all_answers.data )

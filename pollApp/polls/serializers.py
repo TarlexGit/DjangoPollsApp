@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Answer, Question, Choice, PollSet, AnonymousUser, AnonymousAnswer
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -34,6 +35,12 @@ class UserAnswersSerializer(serializers.ModelSerializer):
         model = Answer
         fields = '__all__'
 
+class AnonUserAnswersSerializer(serializers.ModelSerializer):   
+    class Meta:
+        model = AnonymousAnswer
+        fields = '__all__'
+
+
 class AnswerSerializer(serializers.Serializer):
     answers = serializers.JSONField()
     poll_set=serializers.JSONField()
@@ -52,9 +59,16 @@ class AnswerSerializer(serializers.Serializer):
             choices = answers[answer]
 
             for choice_id in choices: 
-                Answer(user=user, question=question, choice=Choice.objects.get(pk=choice_id), poll_set=PollSet.objects.get(pk=poll_set)).save()
-                user.is_answer = True
-                user.save()
+                for choice_id in choices: 
+                    try:
+                        get_object_or_404(Answer,user=user, question=question,choice=Choice.objects.get(pk=choice_id))
+                        print(' in models')
+                        return Response({'error': 'answer is ready'})
+                        # pass
+                    except:
+                        Answer(user=user, question=question, choice=Choice.objects.get(pk=choice_id), poll_set=PollSet.objects.get(pk=poll_set)).save()
+                # user.is_answer = True
+                # user.save()
 
 #### AnonymousAnswer
 class AnonymousAnswerSerializer(serializers.Serializer):
@@ -76,9 +90,9 @@ class AnonymousAnswerSerializer(serializers.Serializer):
 
             for choice_id in choices: 
                 try:
-                    get_object_or_404(AnonymousAnswer,user=user, question=question)
+                    get_object_or_404(AnonymousAnswer,user=user, question=question,choice=Choice.objects.get(pk=choice_id))
                     print(' in models')
-                    return {'error': 'answer is ready'}
+                    return Response({'error': 'answer is ready'})
                     # pass
                 except:
                     AnonymousAnswer(user=user, question=question, choice=Choice.objects.get(pk=choice_id), poll_set=PollSet.objects.get(pk=poll_set)).save()
