@@ -1,7 +1,13 @@
 start commands 
 
+python venv env 
+. env/bin/activate
+
 git clone https://github.com/TarlexGit/DjangoPollsApp.git
 cd pollApp
+
+pip install -r req.txt
+
 python manage.py makemigrations
 python manage.py migrate 
 
