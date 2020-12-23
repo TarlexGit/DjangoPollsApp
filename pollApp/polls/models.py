@@ -35,6 +35,27 @@ class Answer(models.Model):
     choice = models.ForeignKey(Choice, on_delete=models.DO_NOTHING)
     created = models.DateTimeField(auto_now_add=True) 
     poll_set = models.ForeignKey(PollSet, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.choice.title 
+
+
+class AnonymousUser(models.Model):
+    ''' возможно обернуть в AbstractUser для предсоздания юзера и последущей регистрации '''
+    user = models.AutoField(primary_key=True)
+    data = models.CharField(max_length=1000, blank=True, null=True) # для метадаты, айпишника и других первичныхх отпечатков
+    created = models.DateTimeField(auto_now_add=True) 
+
+class AnonymousAnswer(models.Model):  
+    ''' модель только для анонимных пользователей  ''' 
+    user = models.ForeignKey(AnonymousUser, verbose_name='user', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
+    choice = models.ForeignKey(Choice, on_delete=models.DO_NOTHING)
+    created = models.DateTimeField(auto_now_add=True) 
+    poll_set = models.ForeignKey(PollSet, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.choice.title
+
+    class Meta:
+        get_latest_by = 'created'
