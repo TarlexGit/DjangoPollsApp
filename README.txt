@@ -4,7 +4,7 @@ python venv env
 . env/bin/activate
 
 git clone https://github.com/TarlexGit/DjangoPollsApp.git
-cd pollApp
+cd DjangoPollsApp
 
 pip install -r req.txt
 
