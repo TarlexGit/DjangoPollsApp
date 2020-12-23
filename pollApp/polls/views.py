@@ -12,19 +12,15 @@ from rest_framework.request import Request
 from rest_framework.generics import get_object_or_404  
 
 
-class QuestionsView(APIView):
-    # permission_classes = (IsAuthenticated,)
-    serializer_class = QuestionSerializer
+class QuestionsView(APIView): 
+    serializer_class = QuestionSerializer 
 
     def get(self, request):
         questions = Question.objects.filter(visible=True, )
         last_point = QuestionSerializer(questions, many=True)
         return Response(last_point.data)
 
-class AllPollSetView(APIView):
-    # permission_classes = (IsAuthenticated,)
-    serializer_class = PollSetSerializer
-
+class AllPollSetView(APIView):  
     def get(self, request):
         sets = PollSet.objects.filter(active=True, )
         all_polls = PollSetSerializer(sets, many=True)
@@ -67,8 +63,7 @@ class QuestionAnswer(generics.GenericAPIView):
  
 
 class AllAnswers(APIView): 
-    def get(self, request):
-        # print('---------', request.COOKIES['AnonymousUser'])
+    def get(self, request): 
         if request.user: 
             print('request.user', request.user)
             try:
@@ -77,11 +72,6 @@ class AllAnswers(APIView):
                 return Response(all_answers.data)
             except:
                 print(request.COOKIES['AnonymousUser'])
-        # elif request.user == "AnonymousUser" and 'AnonymousUser' in request.COOKIES:  
-        #     queryset = AnonymousAnswer.objects.filter(pk=request.COOKIES['AnonymousUser'])
-        #     all_answers = AnonUserAnswersSerializer(queryset, many=True )
-        #     return Response(all_answers.data )
-        # else: 
                 queryset = AnonymousAnswer.objects.filter(user=request.COOKIES['AnonymousUser'])
                 all_answers = AnonUserAnswersSerializer(queryset, many=True)
                 return Response(all_answers.data )
